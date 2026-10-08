@@ -6,11 +6,21 @@
     <title>Painel do Cliente - Portal Contábil</title>
     <style>
         body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .container { max-width: 950px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         h1 { color: #0f172a; margin-top: 0; }
-        .alert-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin-bottom: 20px; border-radius: 4px; }
+        
+        /* Alerta e Aviso Editável */
+        .alert-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin-bottom: 15px; border-radius: 4px; }
         .alert-box h3 { margin: 0 0 5px 0; color: #b45309; }
-        .documents-section { margin-top: 30px; }
+        .notice-box { background-color: #eff6ff; border-left: 4px solid #3b82f6; padding: 15px; margin-bottom: 25px; border-radius: 4px; }
+        .notice-box h3 { margin: 0 0 5px 0; color: #1e40af; }
+
+        /* Resumo e Totais */
+        .summary-card { background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 15px 20px; border-radius: 6px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
+        .summary-card span { font-size: 15px; color: #475569; }
+        .summary-card strong { font-size: 18px; color: #0f172a; }
+
+        .documents-section { margin-top: 20px; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e2e8f0; }
         th { background-color: #f8fafc; color: #475569; }
@@ -22,20 +32,34 @@
 <body>
     <div class="container">
         <h1>Bem-vindo ao seu Portal</h1>
-        <p>Aqui você acompanha seus documentos fiscais e vencimentos em tempo real.</p>
+        <p>Aqui você acompanha seus documentos fiscais, valores e vencimentos em tempo real.</p>
         
+        <!-- Campo de Avisos e Feriados (Editável aqui no código quando precisar) -->
+        <div class="notice-box">
+            <h3>📢 Avisos Importantes & Feriados</h3>
+            <p>Informamos que no dia <strong>12/10</strong> (Nossa Senhora Aparecida) o escritório não terá expediente. Antecipem suas demandas!</p>
+        </div>
+
         <div class="alert-box">
             <h3>⚠️ Alerta de Vencimento Próximo</h3>
             <p>O seu DAS (Simples Nacional) vence em <strong>15/10/2026</strong>. Evite multas pagando em dia!</p>
         </div>
 
+        <!-- Bloco de Soma / Totalizador do Mês -->
+        <div class="summary-card">
+            <span>Total de compromissos / guias com vencimento neste mês:</span>
+            <strong>2 Guias / R$ 450,00</strong>
+        </div>
+
         <div class="documents-section">
-            <h2>Seus Documentos Recentes</h2>
+            <h2>Seus Documentos e Guias do Mês</h2>
             <table>
                 <thead>
                     <tr>
-                        <th>Nome do Documento</th>
-                        <th>Mês / Referência</th>
+                        <th>Documento</th>
+                        <th>Referência</th>
+                        <th>Vencimento</th>
+                        <th>Valor</th>
                         <th>Ação</th>
                     </tr>
                 </thead>
@@ -43,11 +67,15 @@
                     <tr>
                         <td>Guia DAS - Simples Nacional</td>
                         <td>Setembro / 2026</td>
+                        <td>15/10/2026</td>
+                        <td>R$ 350,00</td>
                         <td><a href="#" class="btn-download">Baixar PDF</a></td>
                     </tr>
                     <tr>
                         <td>Folha de Pagamento (Pró-labore)</td>
                         <td>Setembro / 2026</td>
+                        <td>20/10/2026</td>
+                        <td>R$ 100,00</td>
                         <td><a href="#" class="btn-download">Baixar PDF</a></td>
                     </tr>
                 </tbody>
