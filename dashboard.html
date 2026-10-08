@@ -18,6 +18,12 @@
         .summary-card span { font-size: 15px; color: #475569; }
         .summary-card strong { font-size: 18px; color: #0f172a; }
 
+        /* Botão de Upload / Envio Seguro */
+        .upload-section { background-color: #f0fdf4; border: 1px solid #bbf7d0; padding: 20px; border-radius: 6px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
+        .upload-section p { margin: 0; color: #166534; font-size: 14px; }
+        .btn-upload { background-color: #16a34a; color: white; padding: 10px 18px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 14px; }
+        .btn-upload:hover { background-color: #15803d; }
+
         .documents-section { margin-top: 20px; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e2e8f0; }
@@ -36,6 +42,16 @@
         <div class="notice-box">
             <h3>📢 Avisos Importantes & Feriados</h3>
             <p>Informamos que no dia <strong>12/10</strong> (Nossa Senhora Aparecida) o escritório não terá expediente. Antecipem suas demandas!</p>
+        </div>
+
+        <!-- Seção de Envio Seguro de Documentos (Google Drive) -->
+        <div class="upload-section">
+            <div>
+                <strong>Precisa enviar extratos ou comprovantes?</strong>
+                <p>Clique ao lado para carregar seus arquivos com total segurança diretamente para o nosso escritório.</p>
+            </div>
+            <!-- Substitua o '#' abaixo pelo link da sua pasta do Google Drive -->
+            <a href="AQUI_O_LINK_DO_SEU_GOOGLE_DRIVE" target="_blank" class="btn-upload">📁 Enviar Documentos</a>
         </div>
 
         <!-- Bloco de Soma / Totalizador do Mês -->
