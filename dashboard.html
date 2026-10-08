@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Cliente - Portal Contábil</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        h1 { color: #0f172a; margin-top: 0; }
+        .alert-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin-bottom: 20px; border-radius: 4px; }
+        .alert-box h3 { margin: 0 0 5px 0; color: #b45309; }
+        .documents-section { margin-top: 30px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        th { background-color: #f8fafc; color: #475569; }
+        .btn-download { background-color: #2563eb; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 14px; }
+        .btn-download:hover { background-color: #1d4ed8; }
+        .logout { margin-top: 30px; display: inline-block; color: #dc2626; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bem-vindo ao seu Portal</h1>
+        <p>Aqui você acompanha seus documentos fiscais e vencimentos em tempo real.</p>
+        
+        <div class="alert-box">
+            <h3>⚠️ Alerta de Vencimento Próximo</h3>
+            <p>O seu DAS (Simples Nacional) vence em <strong>15/10/2026</strong>. Evite multas pagando em dia!</p>
+        </div>
+
+        <div class="documents-section">
+            <h2>Seus Documentos Recentes</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome do Documento</th>
+                        <th>Mês / Referência</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Guia DAS - Simples Nacional</td>
+                        <td>Setembro / 2026</td>
+                        <td><a href="#" class="btn-download">Baixar PDF</a></td>
+                    </tr>
+                    <tr>
+                        <td>Folha de Pagamento (Pró-labore)</td>
+                        <td>Setembro / 2026</td>
+                        <td><a href="#" class="btn-download">Baixar PDF</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <a href="index.html" class="logout">Sair do Portal</a>
+    </div>
+</body>
+</html>
