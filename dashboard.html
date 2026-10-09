@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel do Cliente - Portal Contábil</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 950px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; color: #333; display: flex; flex-direction: column; min-height: 100vh; }
+        .container { max-width: 950px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); flex: 1; width: 100%; box-sizing: border-box; }
         h1 { color: #0f172a; margin-top: 0; }
         
         /* Quadro de Avisos e Feriados */
@@ -19,18 +19,27 @@
         .summary-card strong { font-size: 18px; color: #0f172a; }
 
         /* Botão de Upload / Envio Seguro */
-        .upload-section { background-color: #f0fdf4; border: 1px solid #bbf7d0; padding: 20px; border-radius: 6px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
+        .upload-section { background-color: #f0fdf4; border: 1px solid #bbf7d0; padding: 20px; border-radius: 6px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
         .upload-section p { margin: 0; color: #166534; font-size: 14px; }
-        .btn-upload { background-color: #16a34a; color: white; padding: 10px 18px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 14px; }
+        .btn-upload { background-color: #16a34a; color: white; padding: 10px 18px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 14px; display: inline-block; }
         .btn-upload:hover { background-color: #15803d; }
 
         .documents-section { margin-top: 20px; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e2e8f0; }
         th { background-color: #f8fafc; color: #475569; }
-        .btn-download { background-color: #2563eb; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 14px; }
+        .btn-download { background-color: #2563eb; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 14px; display: inline-block; }
         .btn-download:hover { background-color: #1d4ed8; }
-        .logout { margin-top: 30px; display: inline-block; color: #dc2626; text-decoration: none; }
+        
+        /* Ações em Massa */
+        .acoes-lote { margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+        .btn-secundario { background-color: #0ea5e9; color: white; padding: 10px 18px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 14px; display: inline-block; }
+        .btn-secundario:hover { background-color: #0284c7; }
+
+        .logout { margin-top: 30px; display: inline-block; color: #dc2626; text-decoration: none; font-weight: bold; }
+        
+        /* Rodapé Profissional */
+        footer { text-align: center; margin-top: 40px; padding: 20px; color: #64748b; font-size: 13px; border-top: 1px solid #e2e8f0; }
     </style>
 </head>
 <body>
@@ -50,14 +59,14 @@
                 <strong>Precisa enviar extratos ou comprovantes?</strong>
                 <p>Clique ao lado para carregar seus arquivos com total segurança diretamente para o nosso escritório.</p>
             </div>
-            <!-- Substitua o '#' abaixo pelo link da sua pasta do Google Drive -->
-            <a href="AQUI_O_LINK_DO_SEU_GOOGLE_DRIVE" target="_blank" class="btn-upload">📁 Enviar Documentos</a>
+            <!-- Substitua o '#' pelo link da pasta do Google Drive deste cliente -->
+            <a href="https://drive.google.com/drive/folders/18NdxJOFzZ9rKAmyaHEOvmih9UwxWj8wR" target="_blank" class="btn-upload">📁 Enviar Documentos</a>
         </div>
 
-        <!-- Bloco de Soma / Totalizador do Mês -->
+        <!-- Bloco de Soma / Totalizador do Mês (Atualizado dinamicamente via JS) -->
         <div class="summary-card">
             <span>Total de compromissos / guias com vencimento neste mês:</span>
-            <strong>2 Guias / R$ 450,00</strong>
+            <strong id="resumo-total">Carregando...</strong>
         </div>
 
         <div class="documents-section">
@@ -72,26 +81,74 @@
                         <th>Ação</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="tabela-corpo">
                     <tr>
-                        <td>Guia DAS - Simples Nacional</td>
-                        <td>Setembro / 2026</td>
-                        <td>15/10/2026</td>
-                        <td>R$ 350,00</td>
-                        <td><a href="#" class="btn-download">Baixar PDF</a></td>
-                    </tr>
-                    <tr>
-                        <td>Folha de Pagamento (Pró-labore)</td>
-                        <td>Setembro / 2026</td>
-                        <td>20/10/2026</td>
-                        <td>R$ 100,00</td>
-                        <td><a href="#" class="btn-download">Baixar PDF</a></td>
+                        <td colspan="5" style="text-align: center; color: #64748b;">Carregando dados da planilha...</td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
+        <!-- Botões de Ação em Massa e Navegação -->
+        <div class="acoes-lote">
+            <a href="https://drive.google.com/drive/folders/18NdxJOFzZ9rKAmyaHEOvmih9UwxWj8wR" target="_blank" class="btn-secundario">📥 Baixar Todos os Documentos (Pasta do Drive)</a>
+        </div>
+
         <a href="index.html" class="logout">Sair do Portal</a>
     </div>
+
+    <!-- Rodapé Profissional -->
+    <footer>
+        <p>Ricardo Romera Contabilidade • CNPJ: 00.000.000/0001-00 • CRC: SP-000000/O</p>
+        <p>Desenvolvido por Ricardo Romera</p>
+    </footer>
+
+    <!-- Script de Integração com o Google Sheets (Seguro via Web App) -->
+    <script>
+        // Cole abaixo a URL do Web App gerada no Google Apps Script (adicione o parâmetro do cliente, ex: ?cliente=NomeDaAba)
+        const urlDoSeuScript = 'https://script.google.com/macros/s/AKfycbzbUvZYpwdtiXkq2DCQxwrXngGaS_oO1Zdv8HxXukNwH9UybrZ4qo9mSSIaUb1EGDBY/exec';
+
+        fetch(urlDoSeuScript)
+            .then(response => response.json())
+            .then(dados => {
+                const tbody = document.getElementById('tabela-corpo');
+                const resumoTotal = document.getElementById('resumo-total');
+                tbody.innerHTML = ''; 
+
+                if (dados.erro || dados.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #dc2626;">Nenhum documento pendente para este período.</td></tr>';
+                    resumoTotal.innerHTML = '0 Guias / R$ 0,00';
+                    return;
+                }
+
+                let somaValores = 0;
+                let quantidadeGuias = dados.length;
+
+                dados.forEach(item => {
+                    // Tenta calcular o total somando os valores (substituindo vírgula por ponto se necessário)
+                    let valorNumerico = parseFloat(item.Valor.toString().replace('R$', '').replace('.', '').replace(',', '.').trim()) || 0;
+                    somaValores += valorNumerico;
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${item.Documento}</td>
+                        <td>${item.Referencia}</td>
+                        <td>${item.Vencimento}</td>
+                        <td>${item.Valor}</td>
+                        <td><a href="${item.LinkDrive}" target="_blank" class="btn-download">Baixar PDF</a></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+                // Formata o totalizador bonitinho
+                let valorFormatado = somaValores.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                resumoTotal.innerHTML = `${quantidadeGuias} Guia(s) / ${valorFormatado}`;
+            })
+            .catch(error => {
+                console.error('Erro ao carregar dados seguros:', error);
+                document.getElementById('tabela-corpo').innerHTML = '<tr><td colspan="5" style="text-align: center; color: #dc2626;">Erro ao carregar os dados. Verifique a conexão.</td></tr>';
+                document.getElementById('resumo-total').innerHTML = 'Indisponível';
+            });
+    </script>
 </body>
 </html>
