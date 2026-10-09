@@ -31,10 +31,12 @@
         .btn-download { background-color: #2563eb; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 14px; display: inline-block; }
         .btn-download:hover { background-color: #1d4ed8; }
         
-        /* Ações em Massa */
-        .acoes-lote { margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+        /* Ações e Links para as Pastas */
+        .acoes-lote { margin-top: 25px; display: flex; gap: 12px; flex-wrap: wrap; }
         .btn-secundario { background-color: #0ea5e9; color: white; padding: 10px 18px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 14px; display: inline-block; }
         .btn-secundario:hover { background-color: #0284c7; }
+        .btn-terciario { background-color: #6366f1; color: white; padding: 10px 18px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 14px; display: inline-block; }
+        .btn-terciario:hover { background-color: #4f46e5; }
 
         .logout { margin-top: 30px; display: inline-block; color: #dc2626; text-decoration: none; font-weight: bold; }
         
@@ -92,9 +94,10 @@
             </table>
         </div>
 
-        <!-- Botão para acessar a pasta do cliente no Drive -->
+        <!-- Botões de Acesso às Pastas do Google Drive -->
         <div class="acoes-lote">
-            <a href="URL_DA_PASTA_DO_DRIVE_DO_CLIENTE" target="_blank" class="btn-secundario">📁 Abrir Pasta Completa no Google Drive</a>
+            <a href="https://drive.google.com/drive/folders/1chAYE_XdQWPBjGCpxgyMSixFIdTeRBRn" target="_blank" class="btn-secundario">📁 Pasta: Guias e Mensal</a>
+            <a href="https://drive.google.com/drive/folders/1HhljKQDV9U3t5biFJ1z4FJmULV_cducv" target="_blank" class="btn-terciario">🗂️ Pasta: Documentos Permanentes</a>
         </div>
 
         <a href="index.html" class="logout">Sair do Portal</a>
@@ -108,7 +111,7 @@
 
     <!-- Script de Integração -->
     <script>
-        // ⚠️ Substitua 'SUA_URL_DO_WEB_APP_AQUI' pelo link que o Apps Script te deu
+        // URL do Web App configurada para buscar a aba 'teste'
         const urlDoSeuScript = 'https://script.google.com/macros/s/AKfycbzbUvZYpwdtiXkq2DCQxwrXngGaS_oO1Zdv8HxXukNwH9UybrZ4qo9mSSIaUb1EGDBY/exec?cliente=teste';
 
         // 1. Carrega os dados da tabela e totalizador ao abrir a página
@@ -148,11 +151,11 @@
             })
             .catch(error => {
                 console.error('Erro ao carregar dados:', error);
-                document.getElementById('tabela-corpo').innerHTML = '<tr><td colspan="5" style="text-align: center; color: #dc2626;">Erro ao carregar os dados. Verifique a URL do script.</td></tr>';
-                document.getElementById('resumo-total').innerHTML = 'Indisponível';
+                document.getElementById('tabela-corpo').innerHTML = '<tr><td colspan="5" style="text-align: center; color: #dc2626;">Erro ao carregar os dados. Verifique a conexão.</td></tr>';
+                resumoTotal.innerHTML = 'Indisponível';
             });
 
-        // 2. Função de Envio de Arquivo Direto pelo Portal
+        // 2. Função de Envio de Arquivo Direto pelo Portal (Vai cair na pasta 'Enviados para Contabilidade')
         function enviarArquivoParaEscritorio() {
             const inputArquivo = document.getElementById('arquivo-cliente');
             const statusMsg = document.getElementById('status-envio');
@@ -178,7 +181,7 @@
                     fileData: base64Data
                 };
 
-                // ⚠️ Substitua 'SUA_URL_DO_WEB_APP_AQUI' aqui também
+                // URL base do Web App para o POST de envio
                 fetch('https://script.google.com/macros/s/AKfycbzbUvZYpwdtiXkq2DCQxwrXngGaS_oO1Zdv8HxXukNwH9UybrZ4qo9mSSIaUb1EGDBY/exec', {
                     method: 'POST',
                     body: JSON.stringify(payload)
