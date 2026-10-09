@@ -18,10 +18,10 @@
         .summary-card span { font-size: 15px; color: #475569; }
         .summary-card strong { font-size: 18px; color: #0f172a; }
 
-        /* Botão de Upload / Envio Seguro */
-        .upload-section { background-color: #f0fdf4; border: 1px solid #bbf7d0; padding: 20px; border-radius: 6px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        /* Seção de Envio Direto de Documentos */
+        .upload-section { background-color: #f0fdf4; border: 1px solid #bbf7d0; padding: 20px; border-radius: 6px; margin-bottom: 25px; display: flex; flex-direction: column; gap: 12px; }
         .upload-section p { margin: 0; color: #166534; font-size: 14px; }
-        .btn-upload { background-color: #16a34a; color: white; padding: 10px 18px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 14px; display: inline-block; }
+        .btn-upload { background-color: #16a34a; color: white; padding: 10px 18px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 14px; border: none; cursor: pointer; display: inline-block; }
         .btn-upload:hover { background-color: #15803d; }
 
         .documents-section { margin-top: 20px; }
@@ -53,17 +53,20 @@
             <p>Informamos que no dia <strong>12/10</strong> (Nossa Senhora Aparecida) o escritório não terá expediente. Antecipem suas demandas!</p>
         </div>
 
-        <!-- Seção de Envio Seguro de Documentos (Google Drive) -->
+        <!-- Seção de Envio Seguro de Documentos (Direto pelo Portal) -->
         <div class="upload-section">
             <div>
                 <strong>Precisa enviar extratos ou comprovantes?</strong>
-                <p>Clique ao lado para carregar seus arquivos com total segurança diretamente para o nosso escritório.</p>
+                <p>Selecione o arquivo no seu computador ou celular e envie diretamente para o nosso escritório com segurança.</p>
             </div>
-            <!-- Substitua o '#' pelo link da pasta do Google Drive deste cliente -->
-            <a href="https://drive.google.com/drive/folders/18NdxJOFzZ9rKAmyaHEOvmih9UwxWj8wR" target="_blank" class="btn-upload">📁 Enviar Documentos</a>
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <input type="file" id="arquivo-cliente" style="font-size: 14px; padding: 5px; background: white; border: 1px solid #bbf7d0; border-radius: 4px;">
+                <button type="button" onclick="enviarArquivoParaEscritorio()" class="btn-upload">📤 Enviar Arquivo</button>
+            </div>
+            <p id="status-envio" style="font-weight: bold; font-size: 13px;"></p>
         </div>
 
-        <!-- Bloco de Soma / Totalizador do Mês (Atualizado dinamicamente via JS) -->
+        <!-- Bloco de Soma / Totalizador do Mês -->
         <div class="summary-card">
             <span>Total de compromissos / guias com vencimento neste mês:</span>
             <strong id="resumo-total">Carregando...</strong>
@@ -89,9 +92,9 @@
             </table>
         </div>
 
-        <!-- Botões de Ação em Massa e Navegação -->
+        <!-- Botão para acessar a pasta do cliente no Drive -->
         <div class="acoes-lote">
-            <a href="https://drive.google.com/drive/folders/1chAYE_XdQWPBjGCpxgyMSixFIdTeRBRn" target="_blank" class="btn-secundario">📥 Baixar Todos os Documentos (Pasta do Drive)</a>
+            <a href="URL_DA_PASTA_DO_DRIVE_DO_CLIENTE" target="_blank" class="btn-secundario">📁 Abrir Pasta Completa no Google Drive</a>
         </div>
 
         <a href="index.html" class="logout">Sair do Portal</a>
@@ -103,11 +106,12 @@
         <p>Desenvolvido por Ricardo Romera</p>
     </footer>
 
-    <!-- Script de Integração com o Google Sheets (Seguro via Web App) -->
+    <!-- Script de Integração -->
     <script>
-        // Cole abaixo a URL do Web App gerada no Google Apps Script (adicione o parâmetro do cliente, ex: ?cliente=NomeDaAba)
-        const urlDoSeuScript = 'https://script.google.com/macros/s/AKfycbzbUvZYpwdtiXkq2DCQxwrXngGaS_oO1Zdv8HxXukNwH9UybrZ4qo9mSSIaUb1EGDBY/exec';
+        // ⚠️ Substitua 'SUA_URL_DO_WEB_APP_AQUI' pelo link que o Apps Script te deu
+        const urlDoSeuScript = 'https://script.google.com/macros/s/AKfycbzbUvZYpwdtiXkq2DCQxwrXngGaS_oO1Zdv8HxXukNwH9UybrZ4qo9mSSIaUb1EGDBY/exec?cliente=teste';
 
+        // 1. Carrega os dados da tabela e totalizador ao abrir a página
         fetch(urlDoSeuScript)
             .then(response => response.json())
             .then(dados => {
@@ -125,7 +129,6 @@
                 let quantidadeGuias = dados.length;
 
                 dados.forEach(item => {
-                    // Tenta calcular o total somando os valores (substituindo vírgula por ponto se necessário)
                     let valorNumerico = parseFloat(item.Valor.toString().replace('R$', '').replace('.', '').replace(',', '.').trim()) || 0;
                     somaValores += valorNumerico;
 
@@ -140,15 +143,64 @@
                     tbody.appendChild(tr);
                 });
 
-                // Formata o totalizador bonitinho
                 let valorFormatado = somaValores.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
                 resumoTotal.innerHTML = `${quantidadeGuias} Guia(s) / ${valorFormatado}`;
             })
             .catch(error => {
-                console.error('Erro ao carregar dados seguros:', error);
-                document.getElementById('tabela-corpo').innerHTML = '<tr><td colspan="5" style="text-align: center; color: #dc2626;">Erro ao carregar os dados. Verifique a conexão.</td></tr>';
+                console.error('Erro ao carregar dados:', error);
+                document.getElementById('tabela-corpo').innerHTML = '<tr><td colspan="5" style="text-align: center; color: #dc2626;">Erro ao carregar os dados. Verifique a URL do script.</td></tr>';
                 document.getElementById('resumo-total').innerHTML = 'Indisponível';
             });
+
+        // 2. Função de Envio de Arquivo Direto pelo Portal
+        function enviarArquivoParaEscritorio() {
+            const inputArquivo = document.getElementById('arquivo-cliente');
+            const statusMsg = document.getElementById('status-envio');
+            
+            if (inputArquivo.files.length === 0) {
+                alert('Por favor, selecione um arquivo primeiro.');
+                return;
+            }
+
+            const arquivo = inputArquivo.files[0];
+            statusMsg.style.color = '#2563eb';
+            statusMsg.innerHTML = 'Enviando arquivo...';
+
+            const reader = new FileReader();
+            reader.readAsDataURL(arquivo);
+            reader.onload = function () {
+                const base64Data = reader.result.split(',')[1];
+                
+                const payload = {
+                    cliente: "teste", // Nome da aba correspondente
+                    fileName: arquivo.name,
+                    mimeType: arquivo.type,
+                    fileData: base64Data
+                };
+
+                // ⚠️ Substitua 'SUA_URL_DO_WEB_APP_AQUI' aqui também
+                fetch('https://script.google.com/macros/s/AKfycbzbUvZYpwdtiXkq2DCQxwrXngGaS_oO1Zdv8HxXukNwH9UybrZ4qo9mSSIaUb1EGDBY/exec', {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                })
+                .then(response => response.json())
+                .then(resultado => {
+                    if (resultado.status === 'sucesso') {
+                        statusMsg.style.color = '#16a34a';
+                        statusMsg.innerHTML = '✅ Arquivo enviado com sucesso para o escritório!';
+                        inputArquivo.value = '';
+                    } else {
+                        statusMsg.style.color = '#dc2626';
+                        statusMsg.innerHTML = '❌ Erro ao enviar. Tente novamente.';
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    statusMsg.style.color = '#dc2626';
+                    statusMsg.innerHTML = '❌ Erro de conexão ao enviar o arquivo.';
+                });
+            };
+        }
     </script>
 </body>
 </html>
