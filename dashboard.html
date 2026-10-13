@@ -27,6 +27,7 @@
         th { background-color: #f8fafc; color: #475569; }
         .btn-download { background-color: #2563eb; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 14px; display: inline-block; }
         .btn-download:hover { background-color: #1d4ed8; }
+        .btn-disabled { background-color: #94a3b8; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 14px; display: inline-block; pointer-events: none; }
         
         .acoes-lote { margin-top: 25px; display: flex; gap: 12px; flex-wrap: wrap; }
         .btn-secundario { background-color: #0ea5e9; color: white; padding: 10px 18px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 14px; display: inline-block; }
@@ -61,7 +62,7 @@
         </div>
 
         <div class="summary-card">
-            <span>Total de documentos disponíveis na pasta:</span>
+            <span>Total de compromissos / guias com vencimento neste mês:</span>
             <strong id="resumo-total">Carregando...</strong>
         </div>
 
@@ -79,7 +80,7 @@
                 </thead>
                 <tbody id="tabela-corpo">
                     <tr>
-                        <td colspan="5" style="text-align: center; color: #64748b;">Carregando arquivos do Drive...</td>
+                        <td colspan="5" style="text-align: center; color: #64748b;">Carregando dados da planilha...</td>
                     </tr>
                 </tbody>
             </table>
@@ -102,7 +103,7 @@
         // Insira aqui a URL atualizada do seu Web App do Apps Script
         const urlDoSeuScript = 'https://script.google.com/macros/s/AKfycbzbUvZYpwdtiXkq2DCQxwrXngGaS_oO1Zdv8HxXukNwH9UybrZ4qo9mSSIaUb1EGDBY/exec?cliente=teste';
 
-        // 1. Carrega os arquivos direto da pasta do Google Drive
+        // 1. Carrega os dados da planilha e cruza com os links do Google Drive
         fetch(urlDoSeuScript)
             .then(response => response.json())
             .then(dados => {
@@ -111,30 +112,39 @@
                 tbody.innerHTML = ''; 
 
                 if (dados.erro || dados.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #dc2626;">Nenhum documento encontrado na pasta.</td></tr>';
-                    resumoTotal.innerHTML = '0 Documento(s)';
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #dc2626;">Nenhum documento pendente para este período.</td></tr>';
+                    resumoTotal.innerHTML = '0 Guias / R$ 0,00';
                     return;
                 }
 
-                let quantidadeArquivos = dados.length;
+                let somaValores = 0;
+                let quantidadeGuias = dados.length;
 
                 dados.forEach(item => {
+                    let valorNumerico = parseFloat(item.Valor.toString().replace('R$', '').replace('.', '').replace(',', '.').trim()) || 0;
+                    somaValores += valorNumerico;
+
+                    let acaoHtml = item.LinkDrive !== "#" 
+                        ? `<a href="${item.LinkDrive}" target="_blank" class="btn-download">Baixar PDF</a>`
+                        : `<span class="btn-disabled" title="Arquivo PDF ainda não inserido na pasta">Aguardando PDF</span>`;
+
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td>${item.Documento}</td>
                         <td>${item.Referencia}</td>
                         <td>${item.Vencimento}</td>
                         <td>${item.Valor}</td>
-                        <td><a href="${item.LinkDrive}" target="_blank" class="btn-download">Baixar PDF</a></td>
+                        <td>${acaoHtml}</td>
                     `;
                     tbody.appendChild(tr);
                 });
 
-                resumoTotal.innerHTML = `${quantidadeArquivos} Arquivo(s) Disponível(is)`;
+                let valorFormatado = somaValores.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                resumoTotal.innerHTML = `${quantidadeGuias} Guia(s) / ${valorFormatado}`;
             })
             .catch(error => {
-                console.error('Erro ao carregar arquivos:', error);
-                document.getElementById('tabela-corpo').innerHTML = '<tr><td colspan="5" style="text-align: center; color: #dc2626;">Erro ao carregar os arquivos do Drive.</td></tr>';
+                console.error('Erro ao carregar dados:', error);
+                document.getElementById('tabela-corpo').innerHTML = '<tr><td colspan="5" style="text-align: center; color: #dc2626;">Erro ao carregar os dados. Verifique a conexão.</td></tr>';
                 resumoTotal.innerHTML = 'Indisponível';
             });
 
