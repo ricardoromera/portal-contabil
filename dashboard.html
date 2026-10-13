@@ -67,7 +67,7 @@
         </div>
 
         <div class="documents-section">
-            <h2>Seus Documentos e Guias do Mês</h2>
+            <h2>Seus Documentos e Guias do Mes</h2>
             <table>
                 <thead>
                     <tr>
@@ -100,11 +100,14 @@
     </footer>
 
     <script>
-        // Insira aqui a URL atualizada do seu Web App do Apps Script
-        const urlDoSeuScript = 'https://script.google.com/macros/s/AKfycbzbUvZYpwdtiXkq2DCQxwrXngGaS_oO1Zdv8HxXukNwH9UybrZ4qo9mSSIaUb1EGDBY/exec?cliente=teste';
+        // URL usada para leitura dos dados (GET com parâmetro do cliente)
+        const urlDoGet = 'https://script.google.com/macros/s/AKfycbzbUvZYpwdtiXkq2DCQxwrXngGaS_oO1Zdv8HxXukNwH9UybrZ4qo9mSSIaUb1EGDBY/exec?cliente=teste';
+        
+        // URL base limpa usada para o envio de arquivos (POST sem parâmetros na query string)
+        const urlDoPost = 'https://script.google.com/macros/s/AKfycbzbUvZYpwdtiXkq2DCQxwrXngGaS_oO1Zdv8HxXukNwH9UybrZ4qo9mSSIaUb1EGDBY/exec';
 
         // 1. Carrega os dados da planilha e cruza com os links do Google Drive
-        fetch(urlDoSeuScript)
+        fetch(urlDoGet)
             .then(response => response.json())
             .then(dados => {
                 const tbody = document.getElementById('tabela-corpo');
@@ -184,7 +187,7 @@
                             files: arrayPayloadFiles
                         };
 
-                        fetch('https://script.google.com/macros/s/AKfycbzbUvZYpwdtiXkq2DCQxwrXngGaS_oO1Zdv8HxXukNwH9UybrZ4qo9mSSIaUb1EGDBY/exec', {
+                        fetch(urlDoPost, {
                             method: 'POST',
                             body: JSON.stringify(payload)
                         })
