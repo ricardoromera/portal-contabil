@@ -9,16 +9,13 @@
         .container { max-width: 950px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); flex: 1; width: 100%; box-sizing: border-box; }
         h1 { color: #0f172a; margin-top: 0; }
         
-        /* Quadro de Avisos e Feriados */
         .notice-box { background-color: #eff6ff; border-left: 4px solid #3b82f6; padding: 15px; margin-bottom: 25px; border-radius: 4px; }
         .notice-box h3 { margin: 0 0 5px 0; color: #1e40af; }
 
-        /* Resumo e Totais */
         .summary-card { background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 15px 20px; border-radius: 6px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
         .summary-card span { font-size: 15px; color: #475569; }
         .summary-card strong { font-size: 18px; color: #0f172a; }
 
-        /* Seção de Envio Direto de Documentos */
         .upload-section { background-color: #f0fdf4; border: 1px solid #bbf7d0; padding: 20px; border-radius: 6px; margin-bottom: 25px; display: flex; flex-direction: column; gap: 12px; }
         .upload-section p { margin: 0; color: #166534; font-size: 14px; }
         .btn-upload { background-color: #16a34a; color: white; padding: 10px 18px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 14px; border: none; cursor: pointer; display: inline-block; }
@@ -31,7 +28,6 @@
         .btn-download { background-color: #2563eb; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 14px; display: inline-block; }
         .btn-download:hover { background-color: #1d4ed8; }
         
-        /* Ações e Links para as Pastas */
         .acoes-lote { margin-top: 25px; display: flex; gap: 12px; flex-wrap: wrap; }
         .btn-secundario { background-color: #0ea5e9; color: white; padding: 10px 18px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 14px; display: inline-block; }
         .btn-secundario:hover { background-color: #0284c7; }
@@ -39,8 +35,6 @@
         .btn-terciario:hover { background-color: #4f46e5; }
 
         .logout { margin-top: 30px; display: inline-block; color: #dc2626; text-decoration: none; font-weight: bold; }
-        
-        /* Rodapé Profissional */
         footer { text-align: center; margin-top: 40px; padding: 20px; color: #64748b; font-size: 13px; border-top: 1px solid #e2e8f0; }
     </style>
 </head>
@@ -49,13 +43,11 @@
         <h1>Bem-vindo ao seu Portal</h1>
         <p>Aqui você acompanha seus documentos fiscais, valores e vencimentos em tempo real.</p>
         
-        <!-- Quadro de Avisos e Feriados -->
         <div class="notice-box">
             <h3>📢 Avisos Importantes & Feriados</h3>
             <p>Informamos que no dia <strong>12/10</strong> (Nossa Senhora Aparecida) o escritório não terá expediente. Antecipem suas demandas!</p>
         </div>
 
-        <!-- Seção de Envio Seguro de Documentos (Direto pelo Portal) -->
         <div class="upload-section">
             <div>
                 <strong>Precisa enviar extratos ou comprovantes?</strong>
@@ -68,9 +60,8 @@
             <p id="status-envio" style="font-weight: bold; font-size: 13px;"></p>
         </div>
 
-        <!-- Bloco de Soma / Totalizador do Mês -->
         <div class="summary-card">
-            <span>Total de compromissos / guias com vencimento neste mês:</span>
+            <span>Total de documentos disponíveis na pasta:</span>
             <strong id="resumo-total">Carregando...</strong>
         </div>
 
@@ -88,13 +79,12 @@
                 </thead>
                 <tbody id="tabela-corpo">
                     <tr>
-                        <td colspan="5" style="text-align: center; color: #64748b;">Carregando dados da planilha...</td>
+                        <td colspan="5" style="text-align: center; color: #64748b;">Carregando arquivos do Drive...</td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
-        <!-- Botões de Acesso às Pastas do Google Drive -->
         <div class="acoes-lote">
             <a href="https://drive.google.com/drive/folders/1chAYE_XdQWPBjGCpxgyMSixFIdTeRBRn" target="_blank" class="btn-secundario">📁 Pasta: Guias e Mensal</a>
             <a href="https://drive.google.com/drive/folders/1HhljKQDV9U3t5biFJ1z4FJmULV_cducv" target="_blank" class="btn-terciario">🗂️ Pasta: Documentos Permanentes</a>
@@ -103,18 +93,16 @@
         <a href="index.html" class="logout">Sair do Portal</a>
     </div>
 
-    <!-- Rodapé Profissional -->
     <footer>
         <p>Ricardo Romera Contabilidade • CNPJ: 00.000.000/0001-00 • CRC: SP-000000/O</p>
         <p>Desenvolvido por Ricardo Romera</p>
     </footer>
 
-    <!-- Script de Integração -->
     <script>
-        // URL do Web App configurada para buscar a aba 'teste'
+        // Insira aqui a URL atualizada do seu Web App do Apps Script
         const urlDoSeuScript = 'https://script.google.com/macros/s/AKfycbzbUvZYpwdtiXkq2DCQxwrXngGaS_oO1Zdv8HxXukNwH9UybrZ4qo9mSSIaUb1EGDBY/exec?cliente=teste';
 
-        // 1. Carrega os dados da tabela e totalizador ao abrir a página
+        // 1. Carrega os arquivos direto da pasta do Google Drive
         fetch(urlDoSeuScript)
             .then(response => response.json())
             .then(dados => {
@@ -123,18 +111,14 @@
                 tbody.innerHTML = ''; 
 
                 if (dados.erro || dados.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #dc2626;">Nenhum documento pendente para este período.</td></tr>';
-                    resumoTotal.innerHTML = '0 Guias / R$ 0,00';
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #dc2626;">Nenhum documento encontrado na pasta.</td></tr>';
+                    resumoTotal.innerHTML = '0 Documento(s)';
                     return;
                 }
 
-                let somaValores = 0;
-                let quantidadeGuias = dados.length;
+                let quantidadeArquivos = dados.length;
 
                 dados.forEach(item => {
-                    let valorNumerico = parseFloat(item.Valor.toString().replace('R$', '').replace('.', '').replace(',', '.').trim()) || 0;
-                    somaValores += valorNumerico;
-
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td>${item.Documento}</td>
@@ -146,16 +130,15 @@
                     tbody.appendChild(tr);
                 });
 
-                let valorFormatado = somaValores.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-                resumoTotal.innerHTML = `${quantidadeGuias} Guia(s) / ${valorFormatado}`;
+                resumoTotal.innerHTML = `${quantidadeArquivos} Arquivo(s) Disponível(is)`;
             })
             .catch(error => {
-                console.error('Erro ao carregar dados:', error);
-                document.getElementById('tabela-corpo').innerHTML = '<tr><td colspan="5" style="text-align: center; color: #dc2626;">Erro ao carregar os dados. Verifique a conexão.</td></tr>';
+                console.error('Erro ao carregar arquivos:', error);
+                document.getElementById('tabela-corpo').innerHTML = '<tr><td colspan="5" style="text-align: center; color: #dc2626;">Erro ao carregar os arquivos do Drive.</td></tr>';
                 resumoTotal.innerHTML = 'Indisponível';
             });
 
-        // 2. Função de Envio de Arquivos (Único ou Múltiplos) para a pasta 'Enviados para Contabilidade'
+        // 2. Função de Envio de Múltiplos Arquivos para a pasta 'Enviados para Contabilidade'
         function enviarArquivoParaEscritorio() {
             const inputArquivo = document.getElementById('arquivo-cliente');
             const statusMsg = document.getElementById('status-envio');
@@ -172,7 +155,7 @@
             let processados = 0;
             let arrayPayloadFiles = [];
 
-            arquivos.forEach((arquivo, index) => {
+            arquivos.forEach((arquivo) => {
                 const reader = new FileReader();
                 reader.readAsDataURL(arquivo);
                 reader.onload = function () {
@@ -186,7 +169,6 @@
 
                     processados++;
 
-                    // Quando terminar de ler todos os arquivos, faz o POST único
                     if (processados === arquivos.length) {
                         const payload = {
                             files: arrayPayloadFiles
