@@ -100,11 +100,8 @@
     </footer>
 
     <script>
-        // URL usada para leitura dos dados (GET com parâmetro do cliente)
+        // URL usada para leitura dos dados (GET direto do Apps Script)
         const urlDoGet = 'https://script.google.com/macros/s/AKfycbzbUvZYpwdtiXkq2DCQxwrXngGaS_oO1Zdv8HxXukNwH9UybrZ4qo9mSSIaUb1EGDBY/exec?cliente=teste';
-        
-        // URL base limpa usada para o envio de arquivos (POST sem parâmetros na query string)
-        const urlDoPost = 'https://script.google.com/macros/s/AKfycbzbUvZYpwdtiXkq2DCQxwrXngGaS_oO1Zdv8HxXukNwH9UybrZ4qo9mSSIaUb1EGDBY/exec';
 
         // 1. Carrega os dados da planilha e cruza com os links do Google Drive
         fetch(urlDoGet)
@@ -127,7 +124,7 @@
                     let valorNumerico = parseFloat(item.Valor.toString().replace('R$', '').replace('.', '').replace(',', '.').trim()) || 0;
                     somaValores += valorNumerico;
 
-                    let acaoHtml = item.LinkDrive !== "#" 
+                    let acaoHtml = (item.LinkDrive && item.LinkDrive.startsWith("https://"))
                         ? `<a href="${item.LinkDrive}" target="_blank" class="btn-download">Baixar PDF</a>`
                         : `<span class="btn-disabled" title="Arquivo PDF ainda não inserido na pasta">Aguardando PDF</span>`;
 
@@ -151,70 +148,69 @@
                 resumoTotal.innerHTML = 'Indisponível';
             });
 
-        // 2. Função de Envio de Múltiplos Arquivos para a pasta 'Enviados para Contabilidade'
-        function enviarArquivoParaEscritorio() {
-            const inputArquivo = document.getElementById('arquivo-cliente');
-            const statusMsg = document.getElementById('status-envio');
-            
-            if (inputArquivo.files.length === 0) {
-                alert('Por favor, selecione ao menos um arquivo primeiro.');
+        // 2. Função de Envio utilizando a rota interna serverless do Vercel (/api/upload)
+        async function enviarArquivoParaEscritorio() {
+            const inputArquivo = document.getElementById("arquivo-cliente");
+            const statusMsg = document.getElementById("status-envio");
+
+            if (!inputArquivo.files.length) {
+                alert("Selecione ao menos um arquivo.");
                 return;
             }
 
             const arquivos = Array.from(inputArquivo.files);
-            statusMsg.style.color = '#2563eb';
-            statusMsg.innerHTML = `Enviando ${arquivos.length} arquivo(s)...`;
+            statusMsg.style.color = "#2563eb";
+            statusMsg.textContent = `Preparando ${arquivos.length} arquivo(s)...`;
 
-            let processados = 0;
-            let arrayPayloadFiles = [];
-
-            arquivos.forEach((arquivo) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(arquivo);
-                reader.onload = function () {
-                    const base64Data = reader.result.split(',')[1];
-                    
-                    arrayPayloadFiles.push({
-                        fileName: arquivo.name,
-                        mimeType: arquivo.type,
-                        fileData: base64Data
-                    });
-
-                    processados++;
-
-                    if (processados === arquivos.length) {
-                        const payload = {
-                            files: arrayPayloadFiles
-                        };
-
-                        fetch(urlDoPost, {
-                            method: 'POST',
-                            headers: {
-                                "Content-Type": "text/plain;charset=utf-8"
-                            },
-                            body: JSON.stringify(payload)
-                        })
-                        .then(response => response.json())
-                        .then(resultado => {
-                            if (resultado.status === 'sucesso') {
-                                statusMsg.style.color = '#16a34a';
-                                statusMsg.innerHTML = `✅ ${resultado.mensagem}`;
-                                inputArquivo.value = '';
-                            } else {
-                                statusMsg.style.color = '#dc2626';
-                                statusMsg.innerHTML = '❌ Erro ao enviar. Tente novamente.';
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Erro:', error);
-                            // Tratamento preventivo para contornar bloqueios de CORS opacos no redirecionamento do Apps Script
-                            statusMsg.style.color = '#16a34a';
-                            statusMsg.innerHTML = '✅ Arquivo(s) enviado(s) com sucesso para o escritório!';
-                            inputArquivo.value = '';
+            try {
+                const arquivosPayload = await Promise.all(
+                    arquivos.map(async (arquivo) => {
+                        const base64 = await new Promise((resolve, reject) => {
+                            const reader = new FileReader();
+                            reader.onload = () => {
+                                const resultado = reader.result;
+                                if (typeof resultado !== "string") {
+                                    reject(new Error("Falha ao ler " + arquivo.name));
+                                    return;
+                                }
+                                resolve(resultado.split(",")[1]);
+                            };
+                            reader.onerror = () => reject(new Error("Falha ao ler " + arquivo.name));
+                            reader.readAsDataURL(arquivo);
                         });
-                    }
-                };
-            });
+
+                        return {
+                            fileName: arquivo.name,
+                            mimeType: arquivo.type || "application/octet-stream",
+                            fileData: base64,
+                        };
+                    })
+                );
+
+                statusMsg.textContent = "Enviando arquivos...";
+
+                const resposta = await fetch("/api/upload", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ files: arquivosPayload }),
+                });
+
+                const resultado = await resposta.json();
+
+                if (!resposta.ok || resultado.status !== "sucesso") {
+                    throw new Error(resultado.mensagem || "Não foi possível concluir o envio.");
+                }
+
+                statusMsg.style.color = "#16a34a";
+                statusMsg.textContent = "✅ " + resultado.mensagem;
+                inputArquivo.value = "";
+            } catch (erro) {
+                console.error("Erro no upload:", erro);
+                statusMsg.style.color = "#dc2626";
+                statusMsg.textContent = "❌ " + (erro.message || "Erro ao enviar os arquivos.");
+            }
         }
     </script>
 </body>
